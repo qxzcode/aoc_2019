@@ -1,2 +1,5 @@
+# cached Python bytecode
+__pycache__/
+
 # input data files
 *.txt
