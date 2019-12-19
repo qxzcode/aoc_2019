@@ -34,8 +34,8 @@ try:
 except RuntimeError:
     pass
 
-# perform a breadth-first search to count how far away the O2 system is
-def get_dist_to_O2(grid):
+# perform a breadth-first search to find the O2 system
+def get_O2_location(grid):
     queue = [(0, 0)]
     visited = {(0, 0): 0}
     while queue:
@@ -46,9 +46,29 @@ def get_dist_to_O2(grid):
                 continue
             char = grid[(x2,y2)]
             if char == 'o':
-                return distance
+                return (x2, y2)
             elif char != '#':
                 queue.append((x2, y2))
             visited[(x2, y2)] = distance
     raise RuntimeError("Didn't find the oxygen system")
-print(get_dist_to_O2(robot.grid))
+
+# perform a breadth-first search to count how far away the farthest space is
+def get_max_dist(grid, start_x, start_y):
+    next_tiles = [(start_x, start_y)]
+    visited = {(start_x, start_y)}
+    distance = -1
+    while next_tiles:
+        distance += 1
+        current_tiles = next_tiles
+        next_tiles = []
+        for x, y in current_tiles:
+            for x2, y2 in [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]:
+                if (x2, y2) in visited:
+                    continue
+                if grid[(x2,y2)] != '#':
+                    next_tiles.append((x2, y2))
+                visited.add((x2, y2))
+    return distance
+
+o2_x, o2_y = get_O2_location(robot.grid)
+print(get_max_dist(robot.grid, o2_x, o2_y))
